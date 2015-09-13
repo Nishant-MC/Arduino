@@ -47,26 +47,19 @@ if __name__ == '__main__':
     for PORT in PORTS:
         CONNECTIONS.append( serial.Serial( PORT, SPEED,
                                            timeout=0,
-                                           stopbits=serial.STOPBITS_TWO ) )
+                                           stopbits=serial.STOPBITS_ONE ) )
 
     print("Broadcasting to ports: ", PORTS)
 
     # Sending byte inputs to available serial ports
-    choice = 'y'
-    while choice == 'y' or choice == 'n':
-        choice = input("y -> send '1', n -> send '0', q -> send '1' & quit: ")
-        if choice == 'y':
-            send_serial(CONNECTIONS, b'1')
-        elif choice == 'n':
-            send_serial(CONNECTIONS, b'0')
-        elif choice == 'q':
-            send_serial(CONNECTIONS, b'1')
-            break
-        else:
-            print("Undefined choice... try again.")
-            choice = 'y'
+    msg = ''
+    while msg != 'Q':
+        msg = input("Enter byte to send (1 = LED on, 0 = LED off, q or Q = quit): ")
+        send_serial(CONNECTIONS, msg.encode("utf-8") )
+        if msg.lower() != 'q':
             continue
-
+        else:
+            break
 
     # Close the connections when done
     for c in CONNECTIONS:
