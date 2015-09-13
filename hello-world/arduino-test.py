@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
     # Sending byte inputs to available serial ports
     msg = ''
-    while msg != 'Q':
+    while msg.lower != 'q':
         msg = input("Enter byte to send (1 = LED on, 0 = LED off, q or Q = quit): ")
         send_serial(CONNECTIONS, msg.encode("utf-8") )
         if msg.lower() != 'q':
