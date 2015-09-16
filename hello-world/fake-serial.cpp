@@ -17,7 +17,7 @@
 
 // Not sure how important setting baudrate is...
 // For now, matching Arduino standard
-#define BAUDRATE 9600            
+#define BAUDRATE B9600            
 
 // Change MODEMDEVICE to the port you want to listen on (must already exist)
 // UNIX-style serial ports are all prefixed with /dev/tty
@@ -35,11 +35,11 @@ int main()
 {
 	int fd,c, res;
 	struct termios oldtio,newtio;
-	char buf[255];
+	char buf[255], bufw[255];
 
 	/* 
 	  Open modem device for reading and writing and not as controlling tty
-      because we don't want to get killed if linenoise sends CTRL-C.
+	  because we don't want to get killed if linenoise sends CTRL-C.
     */
  
 	fd = open(MODEMDEVICE, O_RDWR | O_NOCTTY ); 
@@ -112,15 +112,19 @@ int main()
 		buf[res]=0;             // Set end of string for printf()
 		printf("Byte(s) received: %s", buf);
 		
-		if (  (buf[0]=='1') &&(buf[1]==0) ) {
-			printf(" | LED on request...\n");
+		if (  (buf[0]=='1') && (buf[1]==0) ) {
+			printf(" | LED on... Writing 'Y'\n");
+			bufw[0] = 'Y';
+			write(fd,bufw,1);
 		}
-		else if (  (buf[0]=='0') &&(buf[1]==0) ) {
-			printf(" | LED off request...\n");
+		else if (  (buf[0]=='0') && (buf[1]==0) ) {
+			printf(" | LED off... Writing 'N'\n");
+			bufw[0] = 'N';
+			write(fd,bufw,1);
 		}
-		else if ( ( (buf[0]=='Q')||(buf[0]=='q') )&&(buf[1]==0) ) {
-			STOP=TRUE;
-			printf(" | Quit request... Program terminating.\n");
+		else if ( ( (buf[0]=='Q') || (buf[0]=='q') ) && (buf[1]==0) ) {
+			printf(" | Quit request... Terminating.\n");
+			STOP = TRUE;
 		}
 		else { 
 			printf(" | Unknown command... Doing nothing.\n");
