@@ -60,12 +60,12 @@ def listener(connection, ports):
         output = connection.read(size=READ_SIZE).decode()
         LOCK.acquire()
         if len(output) > 0:
-            print("Byte from " + con_name(connection) +
-                  ": " + str(output) )
+            print( ("Byte from " + con_name(connection) +
+                  ": " + str(output) + "\n" + PROMPT), end="")
         else:
             pass
         LOCK.release()
-    print("TERMINATING " + con_name(connection) + " LISTENER...\n")
+    print("TERMINATING " + con_name(connection) + " LISTENER...")
 
 
 # Main code
@@ -120,4 +120,4 @@ if __name__ == '__main__':
             c.close()
         LOCK.release()
     
-    print("PROGRAM TERMINATING.\n")
+    print("PROGRAM TERMINATING.")
